@@ -8,6 +8,7 @@ let userMongoDB = mongoose.createConnection(
 const userSchema = mongoose.Schema({
   username: String,
   password: String,
+  mobileNumber: String,
   debt: Number,
   type: String,
   orderTotal: Object,

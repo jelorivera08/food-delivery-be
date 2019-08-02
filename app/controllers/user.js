@@ -1,6 +1,7 @@
 const express = require('express');
 const userModel = require('../models/user');
 const router = express.Router();
+const Nexmo = require('nexmo');
 
 // log in user
 router.post('/login', async (req, res) => {
@@ -34,7 +35,7 @@ router.post('/login', async (req, res) => {
 // create a user
 router.post('/signup', async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, mobileNumber } = req.body;
     let existingUsers = await userModel.find({}, null);
     let isExisting = false;
 
@@ -48,8 +49,9 @@ router.post('/signup', async (req, res) => {
       res.status(400).json({ message: 'User is already existing' });
     } else {
       userModel.create({
-        username: username,
-        password: password,
+        username,
+        password,
+        mobileNumber,
         debt: 0,
         type: 'user',
       });
@@ -106,6 +108,38 @@ router.post('/pay-debt', async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: 'unable to pay user debt' });
+  }
+});
+
+// send sms
+// router.post('/sms', async (req, res) => {
+//   try {
+//     const nexmo = new Nexmo({
+//       apiKey: 'fd12bda8',
+//       apiSecret: 'NKq6vVBW58DmfYgA',
+//     });
+
+//     const from = 'Tanghalian';
+//     const to = '  ';
+//     const text =
+//       'Hello from Jelo test\n\n\n\nThis message is from Tanghalian  ';
+
+//     nexmo.message.sendSms(from, to, text);
+
+//     res.status(202).json({ message: 'sms sent successfuly' });
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ message: 'unable to send sms' });
+//   }
+// });
+
+// generate otp
+router.post('/generate-top', async (req, res) => {
+  try {
+    res.status(200).json({ message: 'generate OTP' });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: 'unable to generate OTP' });
   }
 });
 
